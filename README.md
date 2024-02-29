@@ -11,7 +11,7 @@
 <p align="center">
         🤗 <a href="https://huggingface.co/Qwen">Hugging Face</a>&nbsp&nbsp | &nbsp&nbsp🤖 <a href="https://modelscope.cn/organization/qwen">ModelScope</a>&nbsp&nbsp | &nbsp&nbsp 📑 <a href="https://arxiv.org/abs/2309.16609">Paper</a> &nbsp&nbsp ｜ &nbsp&nbsp🖥️ <a href="https://modelscope.cn/studios/qwen/Qwen-72B-Chat-Demo/summary">Demo</a>
 <br>
-<a href="assets/wechat.png">WeChat (微信)</a>&nbsp&nbsp | &nbsp&nbsp<a href="https://discord.gg/z3GAxXZ9Ce">Discord</a>&nbsp&nbsp ｜  &nbsp&nbsp<a href="https://dashscope.aliyun.com">API</a> 
+<a href="assets/wechat.png">WeChat (微信)</a>&nbsp&nbsp | &nbsp&nbsp<a href="https://discord.gg/zmemtgyAxT">Discord</a>&nbsp&nbsp ｜  &nbsp&nbsp<a href="https://dashscope.aliyun.com">API</a> 
 </p>
 <br><br>
 
@@ -267,6 +267,8 @@ from transformers import AutoModelForCausalLM, AutoTokenizer
 from transformers import GenerationConfig
 from qwen_generation_utils import make_context, decode_tokens, get_stop_words_ids
 
+# To generate attention masks automatically, it is necessary to assign distinct
+# token_ids to pad_token and eos_token, and set pad_token_id in the generation_config.
 tokenizer = AutoTokenizer.from_pretrained(
     './',
     pad_token='<|extra_0|>',
@@ -690,6 +692,8 @@ model = AutoPeftModelForCausalLM.from_pretrained(
     trust_remote_code=True
 ).eval()
 ```
+
+> NOTE: If `peft>=0.8.0`, it will try to load the tokenizer as well, however, initialized without `trust_remote_code=True`, leading to `ValueError: Tokenizer class QWenTokenizer does not exist or is not currently imported.` Currently, you could downgrade `peft<0.8.0` or move tokenizer files elsewhere to workaround this issue.
 
 If you want to merge the adapters and save the finetuned model as a standalone model (you can only do this with LoRA, and you CANNOT merge the parameters from Q-LoRA), you can run the following codes:
 
